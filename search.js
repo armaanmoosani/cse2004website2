@@ -42,7 +42,7 @@ searchBtn.addEventListener("click", function () {
 
     messageEl.textContent = "Loading…";
 
-    fetch(`https://api.tiingo.com/tiingo/daily/${encodeURIComponent(ticker)}?token=${apiKey}`)
+    fetch(`/api/proxy?service=tiingo&ticker=${ticker}`)
         .then(res => res.ok ? res.json() : Promise.reject())
         .then(meta => {
             companyNameEl.textContent = meta.name ? `${meta.name} (${ticker})` : ticker;
@@ -52,7 +52,7 @@ searchBtn.addEventListener("click", function () {
             messageEl.textContent = "Error fetching company metadata.";
         });
 
-    fetch(`https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${finnhubKey}`)
+    fetch(`/api/proxy?service=finnhubQuote&ticker=${ticker}`)
         .then(res => res.ok ? res.json() : Promise.reject())
         .then(quote => {
             const priceText = quote.c ? `$${quote.c.toFixed(2)}` : "N/A";
@@ -63,12 +63,12 @@ searchBtn.addEventListener("click", function () {
             messageEl.textContent = "Error fetching price data.";
         });
 
-    fetch(`https://finnhub.io/api/v1/company-news?symbol=${ticker}&from=${yesterday}&to=${dateStrToday}&token=${finnhubKey}`)
+    fetch(`/api/proxy?service=finnhubNews&ticker=${ticker}`)
         .then(res => res.ok ? res.json() : Promise.reject())
         .then(newsData => {
             const newsArr = Array.isArray(newsData) ? newsData : [];
             if (!newsArr.length) {
-                newsListEl.innerHTML = "<li>No news available.</li>";
+                newsListEl.textContent = "No news available.";
                 aiSummaryEl.textContent = "AI summary unavailable — no news data.";
                 return null;
             }
@@ -106,11 +106,10 @@ Now, based on the recent headlines and the latest price change for ${companyName
 Recent headlines and summaries:
 ${aggregated.slice(0, 15000)}
     `;
-            return fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent", {
+            return fetch(`/api/proxy?service=gemini&ticker=${ticker}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "x-goog-api-key": geminiKey
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     contents: [
