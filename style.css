@@ -63,3 +63,8 @@ button:hover {
     background-color: #a0c6ff;
     transform: translateY(-1px);
 }
+
+#results{
+    color: #89aeff;
+    visibility: hidden;
+}
