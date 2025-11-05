@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - master 
+      - master
 
 jobs:
   deploy:
@@ -13,15 +13,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Replace API key placeholder
+      - name: Prepare deploy folder
         run: |
-          sed -i "s/API_KEY_PLACEHOLDER/${{ secrets.API_KEY }}/g" ./search.js
-          sed -i "s/GEMINI_API_KEY/${{ secrets.GEMINI_API_KEY }}/g" ./search.js
-          sed -i "s/FINNHUB_API_KEY/${{ secrets.FINNHUB_API_KEY }}/g" ./search.js
+          mkdir public
+          cp -r index.html search.js style.css public/
 
+      - name: Replace API keys
+        run: |
+          sed -i "s/API_KEY_PLACEHOLDER/${{ secrets.API_KEY }}/g" public/search.js
+          sed -i "s/GEMINI_API_KEY/${{ secrets.GEMINI_API_KEY }}/g" public/search.js
+          sed -i "s/FINNHUB_API_KEY/${{ secrets.FINNHUB_API_KEY }}/g" public/search.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN}}
-          publish_dir: ./ 
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
