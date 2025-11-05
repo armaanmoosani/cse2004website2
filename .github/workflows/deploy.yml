@@ -15,7 +15,7 @@ jobs:
 
       - name: Replace API key placeholder
         run: |
-          sed -i "s/FMP_API_KEY_PLACEHOLDER/${{ secrets.FMP_API_KEY }}/g" ./search.js
+          sed -i "s/API_KEY_PLACEHOLDER/${{ secrets.API_KEY }}/g" ./search.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
