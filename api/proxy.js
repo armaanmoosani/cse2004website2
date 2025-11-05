@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       options.headers["x-goog-api-key"] = process.env.GEMINI_API_KEY;
       options.headers["Content-Type"] = "application/json";
       options.method = req.method;
-      options.body = req.body;
+      options.body = typeof req.body === "string" ? req.body : JSON.stringify(req.body);
     }
 
     const response = await fetch(url, options);
