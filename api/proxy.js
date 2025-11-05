@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     let options = { headers: {} };
 
     if (service === "tiingo") {
-      url = `https://api.tiingo.com/tiingo/daily/${encodeURIComponent(ticker)}?token=${apiKey}`;
+      url = `https://api.tiingo.com/tiingo/daily/${ticker}?token=${process.env.API_KEY}`;
     } else if (service === "finnhubQuote") {
       url = `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${process.env.FINNHUB_API_KEY}`;
     } else if (service === "finnhubNews") {
