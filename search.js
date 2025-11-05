@@ -1,6 +1,6 @@
-const apiKey = "API_KEY_PLACEHOLDER";
-const geminiKey = "GEMINI_API_KEY";
-const finnhubKey = "FINNHUB_API_KEY"
+const apiKey = process.env.API_KEY_PLACEHOLDER;
+const geminiKey = process.env.GEMINI_API_KEY;
+const finnhubKey = process.env.FINNHUB_API_KEY;
 
 const tickerInput = document.getElementById("ticker");
 const searchBtn = document.getElementById("search-button");
