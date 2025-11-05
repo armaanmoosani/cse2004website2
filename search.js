@@ -1,7 +1,3 @@
-const apiKey = process.env.d1aa589266181a95659d08296a8429a45a1c24ac;
-const geminiKey = process.env.AIzaSyCHleShsH3ToWZHwQ2kqPurjItYYsfxy1U;
-const finnhubKey = process.env.d45qpn1r01qieo4rhee0d45qpn1r01qieo4rheeg;
-
 const tickerInput = document.getElementById("ticker");
 const searchBtn = document.getElementById("search-button");
 const companyNameEl = document.getElementById("company-name");
