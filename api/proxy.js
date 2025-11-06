@@ -1,16 +1,4 @@
-import rateLimit from 'next-rate-limit';
-
-const limiter = rateLimit({
-  interval: 60 * 1000,
-  uniqueTokenPerInterval: 500,
-});
 export default async function handler(req, res) {
-  try {
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    await limiter.check(res, 10, ip);
-  } catch {
-    return res.status(429).json({ error: 'Too many requests, please try again later.' });
-  }
   const { service, ticker, query } = req.query;
 
   if (!service) return res.status(400).json({ error: "Missing service parameter" });
