@@ -90,7 +90,7 @@ searchBtn.addEventListener("click", function () {
             if (!aggregated) return;
             aiSummaryEl.textContent = "Generating summary…";
             const prompt = `
-You are an AI assistant that writes investor summaries in the style of Robinhood Cortex Digests. Here’s an example:
+You are an AI assistant that writes investor summaries. Here’s an example:
 
 Robinhood shares rise ahead of Q3 earnings report after market close today, fueled by strong growth expectations. Analysts expect EPS of $0.54 versus $0.17 a year ago, and revenues rising 88% to $1.21 billion. Options traders anticipate a 9.45% price swing. Product expansion and crypto trading growth are driving revenue diversification. Why this matters: Investors are weighing growth potential against valuation risks.
 
@@ -136,15 +136,12 @@ ${aggregated.slice(0, 15000)}
                 return;
             }
             const candidate = aiResp.candidates[0];
-            const text =
-                candidate?.content?.parts?.[0]?.text ||
+            aiSummaryEl.textContent = candidate?.content?.parts?.[0]?.text ||
                 candidate?.content ||
                 aiResp.output_text ||
                 "Summary unavailable.";
-            aiSummaryEl.textContent = text.trim();
             document.getElementById("results").style.visibility = "visible";
         })
-
         .catch(() => {
             aiSummaryEl.textContent = aiSummaryEl.textContent || "AI summary unavailable.";
         })
@@ -202,10 +199,7 @@ tickerInput.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("click", (e) => {
-  if (
-    e.target !== tickerInput &&
-    !suggestionBox.contains(e.target)
-  ) {
-    suggestionBox.style.display = "none";
-  }
+    if (e.target !== tickerInput &&!suggestionBox.contains(e.target)) {
+        suggestionBox.style.display = "none";
+    }
 });
