@@ -164,9 +164,13 @@ tickerInput.addEventListener("input", () => {
         .then(res => res.ok ? res.json() : Promise.reject())
         .then(data => {
             while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
-            const results = data.result || [];
+            const results = data.result;
             if (!results.length) {
                 suggestionBox.style.display = "none";
+            }
+            if (!query) {
+                suggestionBox.style.display = "none";
+                return;
             }
             for (let i = 0; i < Math.min(results.length, 6); i++) {
                 const item = results[i];
