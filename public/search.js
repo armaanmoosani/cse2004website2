@@ -200,3 +200,12 @@ tickerInput.addEventListener("keydown", (e) => {
         searchBtn.click();
     }
 });
+
+document.addEventListener("click", (e) => {
+  if (
+    e.target !== tickerInput &&
+    !suggestionBox.contains(e.target)
+  ) {
+    suggestionBox.style.display = "none";
+  }
+});
