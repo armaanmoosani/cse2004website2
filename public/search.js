@@ -21,6 +21,10 @@ const ddY = String(yesterdayDate.getDate()).padStart(2, "0");
 const dateStrToday = `${yyyy}-${mm}-${dd}`;
 const yesterday = `${yyyyY}-${mmY}-${ddY}`;
 
+const suggestionBox = document.createElement("ul");
+suggestionBox.className = "suggestions";
+tickerInput.parentNode.appendChild(suggestionBox);
+
 
 searchBtn.addEventListener("click", function () {
     companyNameEl.textContent = "";
@@ -147,4 +151,41 @@ ${aggregated.slice(0, 15000)}
         .finally(() => {
             messageEl.textContent = "";
         });
+});
+
+tickerInput.addEventListener("input", () => {
+  const query = tickerInput.value.trim();
+  if (!query) {
+    while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
+    return;
+  }
+
+  fetch(`/api/proxy?service=finnhubAutocomplete&query=${encodeURIComponent(query)}`)
+    .then(res => res.ok ? res.json() : Promise.reject())
+    .then(data => {
+      while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
+      const results = data.result || [];
+      for (let i = 0; i < Math.min(results.length, 6); i++) {
+        const item = results[i];
+        const li = document.createElement("li");
+        li.textContent = `${item.displaySymbol} — ${item.description}`;
+        li.className = "suggestion-item";
+        li.addEventListener("click", () => {
+          tickerInput.value = item.symbol;
+          while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
+          searchBtn.click(); 
+        });
+        suggestionBox.appendChild(li);
+      }
+    })
+    .catch(() => {
+      while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
+    });
+});
+
+tickerInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    searchBtn.click();
+  }
 });
