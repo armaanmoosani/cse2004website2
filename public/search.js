@@ -154,38 +154,44 @@ ${aggregated.slice(0, 15000)}
 });
 
 tickerInput.addEventListener("input", () => {
-  const query = tickerInput.value.trim();
-  if (!query) {
-    while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
-    return;
-  }
+    const query = tickerInput.value.trim();
+    if (!query) {
+        while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
+        return;
+    }
 
-  fetch(`/api/proxy?service=finnhubAutocomplete&query=${encodeURIComponent(query)}`)
-    .then(res => res.ok ? res.json() : Promise.reject())
-    .then(data => {
-      while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
-      const results = data.result || [];
-      for (let i = 0; i < Math.min(results.length, 6); i++) {
-        const item = results[i];
-        const li = document.createElement("li");
-        li.textContent = `${item.displaySymbol} — ${item.description}`;
-        li.className = "suggestion-item";
-        li.addEventListener("click", () => {
-          tickerInput.value = item.symbol;
-          while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
-          searchBtn.click(); 
+    fetch(`/api/proxy?service=finnhubAutocomplete&query=${encodeURIComponent(query)}`)
+        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(data => {
+            while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
+            const results = data.result || [];
+            if (!results.length) {
+                suggestionBox.style.display = "none";
+            }
+            for (let i = 0; i < Math.min(results.length, 6); i++) {
+                const item = results[i];
+                const li = document.createElement("li");
+                li.textContent = `${item.displaySymbol} — ${item.description}`;
+                li.className = "suggestion-item";
+                li.addEventListener("click", () => {
+                    tickerInput.value = item.symbol;
+                    while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
+                    suggestionBox.style.display = "none";
+                    searchBtn.click();
+                });
+                suggestionBox.appendChild(li);
+            }
+            suggestionBox.style.display = "block";
+        })
+        .catch(() => {
+            while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
+            suggestionBox.style.display = "none";
         });
-        suggestionBox.appendChild(li);
-      }
-    })
-    .catch(() => {
-      while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
-    });
 });
 
 tickerInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    searchBtn.click();
-  }
+    if (e.key === "Enter") {
+        e.preventDefault();
+        searchBtn.click();
+    }
 });
