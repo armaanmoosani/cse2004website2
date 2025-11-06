@@ -156,6 +156,7 @@ ${aggregated.slice(0, 15000)}
 tickerInput.addEventListener("input", () => {
     const query = tickerInput.value.trim();
     if (!query) {
+        suggestionBox.style.display = "none";
         while (suggestionBox.firstChild) suggestionBox.removeChild(suggestionBox.firstChild);
         return;
     }
